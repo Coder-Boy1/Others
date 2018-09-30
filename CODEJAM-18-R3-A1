@@ -1,0 +1,77 @@
+// The approach which you told in your solution.
+// Applying binary search and each binary search.
+// Each person has x number of steps then all person can move in any place in a square and then intersection of all squares.
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+vector < pair < ll , ll > > a;
+int n;
+
+int check(ll d)
+{
+    ll tx,ty,bx,by;
+    tx=a[0].first-d;
+    ty=a[0].second+d;
+    bx=a[0].first+d;
+    by=a[0].second-d;
+    
+    for(int i=1;i<n;i++)
+    {
+        ll tx1,ty1,bx1,by1;
+        tx1=a[i].first-d;
+        ty1=a[i].second+d;
+        bx1=a[i].first+d;
+        by1=a[i].second-d;
+        
+        if (tx > bx1 || tx1 > bx) 
+        return 0; 
+  
+        if (ty < by1 || ty1 < by) 
+        return 0;
+        tx=max(tx,tx1);
+        ty=min(ty,ty1);
+        bx=min(bx,bx1);
+        by=max(by,by1);
+    }
+    
+    return 1;
+}
+int main()
+{
+    int t;
+    cin>>t;
+    for(int z=1;z<=t;z++)
+    {
+        ll t1,t2;
+        cin>>n;
+        a.clear();       
+        for(int i=0;i<n;i++)
+        {
+            cin>>t1>>t2;
+            a.push_back({t1,t2});
+        }
+        
+        ll s=0,e=10000000000;
+        ll ans=e;
+        while(s<=e)
+        {
+            ll m=(s+e)/2;
+            
+            if(check(m))
+            {
+                ans=min(ans,m);
+                e=m-1;
+            }
+            else
+            {
+                s=m+1;
+            }
+        }
+        
+        cout<<"Case #"<<z<<": "<<ans<<endl;
+    }
+    return 0;
+}
