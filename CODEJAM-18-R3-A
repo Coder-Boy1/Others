@@ -1,0 +1,60 @@
+// Applied approach of the editorial
+// Considered x and y corordinates independentaly.
+// Finding max and min for each axis ( x and y)
+// Found mean of that and required position would be that median.
+// Counted minimum number of steps to reach that position.
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+int main()
+{
+    int t;
+    cin>>t;
+    for(int z=1;z<=t;z++)
+    {
+        ll n,t1,t2;
+        cin>>n;
+        vector < pair < ll , ll > > a;
+        for(int i=0;i<n;i++)
+        {
+            cin>>t1>>t2;
+            a.push_back({t1,t2});
+        }
+        
+        ll maxx=-10000000000,minx=10000000000;
+        for(int j=0;j<n;j++)
+        {
+            maxx=max(maxx,a[j].first);
+            minx=min(minx,a[j].first);
+        }
+        
+         ll maxy=-10000000000,miny=10000000000;
+        for(int j=0;j<n;j++)
+        {
+            maxy=max(maxy,a[j].second);
+            miny=min(miny,a[j].second);
+        }
+        
+        ll d1=maxx+minx;
+        d1/=2;
+        
+        ll d2=maxy+miny;
+        d2/=2;
+        
+     //   cout<<d1<<" "<<d2<<endl;
+        ll ans=0;
+        for(int i=0;i<n;i++)
+        {
+            ans=max(ans,max(abs(d1-a[i].first),abs(d2-a[i].second)));
+        }
+        
+        
+        cout<<"Case #"<<z<<": "<<ans<<endl;
+    }
+    return 0;
+}
