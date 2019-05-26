@@ -1,0 +1,132 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds;
+
+#define ordered_set                                                            \
+  tree<int, null_type, less<int>, rb_tree_tag,                                 \
+       tree_order_statistics_node_update>
+
+ordered_set row[50005];
+ordered_set column[50005];
+
+int s[410][410];
+int a[410][410];
+int unche[410][410];
+int niche[410][410];
+
+
+int main()
+{
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+
+        int t;
+        cin>>t;
+        
+        int foo=0;
+        while(t--)
+        {
+                foo++;
+                int n,m,k;
+                cin>>n>>m>>k;
+        
+                for(int i=0;i<n;i++)
+                {
+                        for(int j=0;j<m;j++)
+                        {
+                                cin>>s[i][j];
+                        }
+                }
+                
+                for(int i=0;i<n;i++)
+                {
+                        a[i][0] = 1;
+                        int start = 0;
+                        multiset <int> foo,bar;
+                        multiset <int> :: iterator it;
+                        foo.insert(-s[i][0]);
+                        bar.insert(s[i][0]);
+                        for(int j=1;j<m;j++)
+                        {
+                                foo.insert(-s[i][j]);
+                                bar.insert(s[i][j]);
+                                int f;
+                                for(f = start;f<=j;f++)
+                                {
+                                        if((-(*foo.begin()))-(*bar.begin()) <= k)
+                                        {
+                                                break;
+                                        }
+                                        it = foo.find(-s[i][f]);
+                                        foo.erase(it);
+                                        it = bar.find(s[i][f]);
+                                        bar.erase(it);
+                                }
+                                start = f;
+                                a[i][j] = j-start+1;
+                        }
+                }
+        
+                for(int j=0;j<m;j++)
+                {
+                        stack <int> bholu;
+                        for(int i=0;i<n;i++)
+                        {
+                                while(!bholu.empty() && a[bholu.top()][j]>=a[i][j])
+                                {
+                                        bholu.pop();
+                                }
+                                if(bholu.empty())
+                                {
+                                        unche[i][j] = -1;
+                                }
+                                else
+                                {
+                                        unche[i][j] = bholu.top();
+                                }
+                                bholu.push(i);
+                        }
+                }
+
+                for(int j=0;j<m;j++)
+                {
+                        stack <int> bholu;
+                        for(int i=n-1;i>=0;i--)
+                        {
+                                while(!bholu.empty() && a[bholu.top()][j]>=a[i][j])
+                                {
+                                        bholu.pop();
+                                }
+                                if(bholu.empty())
+                                {
+                                        niche[i][j] = n;
+                                }
+                                else
+                                {
+                                        niche[i][j] = bholu.top();
+                                }
+                                bholu.push(i);
+                        }
+                }
+        
+                int utsav = 0;
+                for(int i=0;i<n;i++)
+                {
+                        for(int j=0;j<m;j++)
+                        {
+                                int cur=(i-unche[i][j]+niche[i][j]-i-1)*a[i][j];
+                                utsav = max(utsav,cur);
+                        }
+                }
+                utsav=max(utsav,1);
+                cout<<"Case #"<<foo<<":"<<" ";
+                cout<<utsav<<endl;
+        }
+        
+        return 0;
+}
