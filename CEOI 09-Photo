@@ -1,3 +1,14 @@
+// For each index from 0 to n-1 try to find the best possible answer which starts from this index.
+// The final answer would be best answer among all those n index.
+// Firstly create prefix array for energy. Then substract x[i] ( distance ) from that. lets call pref[i] - x[i] = P[i]
+// Now for index 0 the maximum possible answer would be the right most index j where P[j] >= 0
+// Now for index 1 we have to update out  "P" array for which we have to do two things.
+// 1. substract the energy of 0th day from all elements of P array and
+// 2. add distance between first and second index from all elements of P array . 
+// Now again we have to find largest non negetive integer in P array. ( Which can be done by query of lazy propogation in segment tree )
+// The range update step 1 and 2 can be done lazy update in segment tree.
+// Continue this procedure till last element.
+
 #include <bits/stdc++.h>
 
 using namespace std;
