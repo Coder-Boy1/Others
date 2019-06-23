@@ -1,0 +1,103 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+vector < int > dp[1050];
+vector < pair < int , int > > a[1050];
+
+void foo(int u, int v, int w)
+{
+        vector < int > vr;
+        for(int i=0;i<1050;i++)
+        {
+                int ww= dp[v].size();
+                if(i< ww)
+                        vr.push_back(dp[v][i]+w);
+                else
+                        break;
+        }
+
+        
+        int x=0, y=0, count=0;
+        vector < int > arr;
+        while(count<=1050)
+        {
+                int uu= dp[u].size();
+                int vv= vr.size();
+                if(x==uu || y==vv)
+                        break;
+                if(dp[u][x] < vr[y])
+                {
+                        arr.push_back(dp[u][x]);
+                        x++;
+                }
+                else
+                {
+                        arr.push_back(vr[y]);
+                        y++;
+                }
+                count++;
+        }
+
+        int vv=vr.size();
+        while(y!= vv && count<=1050)
+        {
+                count++;
+                arr.push_back(vr[y]);
+                y++;
+        }
+
+        int uu=dp[u].size();
+        while(x!=uu && count<=1050)
+        {
+                arr.push_back(dp[u][x]);
+                x++;
+                count++;
+        }
+
+        dp[u] = arr;
+}
+
+        
+ifstream fin("pitici.in");
+ofstream fout("pitici.out");
+
+
+int main()
+{
+ 
+        // freopen("dwarf.in","r",stdin);
+        // freopen("dwarf.out","w",stdout);
+
+        // ifstream mycin;
+        // mycin.open ("TRIP.IN");
+        int n, m, k;
+        fin>>n>>m>>k;
+
+        for(int i=0;i<m;i++)
+        {
+                int u, v, w;
+                fin>>u>>v>>w;
+                a[v].push_back({u,w});
+        }
+
+        dp[1].push_back(0);
+
+        for(int i=2;i<=n;i++)
+        {
+                int aa= a[i].size();
+                for(int j=0;j<aa;j++)
+                {
+                        foo(i, a[i][j].first, a[i][j].second);
+                }
+        }
+
+        for(int i=0;i<k;i++)
+        {
+                fout<<dp[n][i]<<" ";
+        }
+        fout<<endl;
+
+
+        return 0;
+}
