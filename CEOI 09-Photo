@@ -1,99 +1,80 @@
 #include <bits/stdc++.h>
-
+ 
 using namespace std;
-
+ 
 #define N 105
-
-int dp[N][N];
-int height[N][N];
-vector < pair < int , int > > a;
+ 
+// int n, A;
+pair < int , int >  a[105];
+map<int, int> mp;
+ 
+int pos[200005];
+int dp[105][105][105];
+ 
 int n, A;
-        
-int find(int s,int e)
+ 
+int maxh(int x, int y)
 {
-        if(s>e)
-                return 0;
-        if(dp[s][e]!=0)
-                return dp[s][e];
-
-        if(s==e)
-        {
-                dp[s][e]=1;
-                return 1;
-        }
-
-        int ans = 100000000;
-        for(int i=s;i<e;i++)
-        {
-                int temp = find(s,i)+find(i+1,e);
-                ans = min(ans, temp);
-        }
-
-
-        int maxh = A / (a[e].first - a[s].first);
-        if(A < (a[e].first - a[s].first))
-        {
-                dp[s][e] = ans;
-                return ans;
-        }
-
-        int left = s;
-        while(left<n)
-        {
-                if(a[left].second <= maxh)
-                        left++;
-                else
-                        break;
-        }
-        int right = e;
-        while(right>0)
-        {
-                if(a[right].second <= maxh)
-                        right--;
-                else
-                        break;
-        }
-
-        if(left!=s || right!=e)
-        {
-                int temp = 1 + find(left, right);
-                ans = min(ans , temp);
-        }
-        dp[s][e]=ans;
-        return ans;
+        return A/max(1,a[y].first - a[x].first);
 }
-
+ 
+ 
+int ans(int s, int e, int x)
+{
+        if( s > e )
+                return 0;
+ 
+        if(dp[s][e][pos[x]]!=-1)
+        {
+                return dp[s][e][pos[x]];
+        }
+        if( a[s].second <= x )
+        {
+                return dp[s][e][pos[x]] = ans(s+1, e, x);
+        }
+        if( a[e].second <= x )
+        {
+                return dp[s][e][pos[x]] = ans(s, e-1, x);
+        }
+ 
+        int temp = 1e9;
+        if( pos[maxh(s, e)] > pos[x])
+        {
+                temp = ans(s, e, maxh(s, e)) + 1;
+        }
+        for(int i=s; i<e; i++)
+        {
+                temp = min(temp, ans(s, i, x) + ans(i+1, e, x));
+        }
+        dp[s][e][pos[x]] = temp;
+        return temp;
+ 
+}
+ 
 int main()
 {
-        
+        memset(dp,-1,sizeof(dp));
         cin>>n>>A;
-
-        vector < pair < int , int > > a1;
-        for(int i=0;i<n;i++)
+        for(int i=1; i<=n; i++)
         {
-                int x, y;
-                cin>>x>>y;
-                a1.push_back({x, y});
+                int a, b;
+                cin>>a>>b;
+                mp[a] = max(mp[a], b);
         }
-
-        sort(a1.begin(), a1.end());
-        a.push_back(a1[n-1]);
-
-        for(int i=n-2;i>=0;i--)
+        int p = 0;
+        map<int, int> ::iterator it = mp.begin();
+        while(it != mp.end())
         {
-                if(a1[i].first == a1[i+1].first)
-                        continue;
-                a.push_back(a1[i]);
+                a[++p] = *it;
+                pos[it->second] = 1;
+                it++;
         }
-
-        sort(a.begin(), a.end());
-        n = a.size();
-
-        if(a[0].first==6204)
-                cout<<23<<endl;
-        else    
-                cout<<find(0,n-1)<<endl;
-    
-
+ 
+        for(int i=1; i<=A; i++)
+        {
+                pos[i] += pos[i-1];
+        }
+ 
+        cout<<ans(1, p, 0)<<endl;
         return 0;
 }
