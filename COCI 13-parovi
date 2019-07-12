@@ -1,0 +1,153 @@
+// Observations : 
+// 1. We can find answer for each index individually and then sum it up.
+// 2. By using some maths we can find occurance of each digit on each index for number from 0 to X.
+// 3. Find for 0 to B and substract 0 to A.
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long 
+
+#define N 100005
+
+int mod =  1000000007;
+
+int freq[N][10];
+
+int a[N], b[N], c[N];
+
+// Find occurance of each digit on each index. For B add it and for A substract it.
+
+int find(string s, int t)
+{
+        int ans=0;
+        int n = s.length();
+        int cur=0;
+
+        for(int i=0; i<=n-1;i++)
+        {
+                cur*=10;
+                cur+=s[i]-'0';
+                cur%=mod;
+                a[i] = cur;
+        }
+
+        int temp = 1;
+        for(int i=n-1;i>=0;i--)
+        {
+                b[i] = temp;
+                c[i] = c[i+1] + (temp*(s[i]-'0')) ;
+                c[i]%=mod;
+                temp*=10;
+                temp%=mod;
+            //    cout<<b[i]<<" "<<c[i]<<endl;
+        }
+
+        int p=0;
+
+        for(int i=n-1; i>=0; i--)
+        {
+                if(i)
+                {
+                        for(int j=0;j<=9;j++)
+                                freq[p][j] += (a[i-1]*t*b[i])%mod;
+                }
+ 
+                for(int j=0;j<s[i]-'0';j++)
+                        freq[p][j]+= b[i]*t;
+                freq[p][s[i]-'0']+= (c[i+1]+1)*t;
+                p++;
+        }
+        return ans;
+
+}
+
+// For each digit on each possible index find answer and sum it.
+
+int findAns()
+{
+        int ans=0;
+        for(int i=0;i<N;i++)
+        {
+                for(int j=0;j<=9;j++)
+                {
+                     //   cout<<freq[i][j]<<" ";
+                        for(int k=0;k<=9;k++)
+                        {
+
+                                int temp = abs(j-k)*freq[i][j];
+                                temp%=mod;
+                                temp*=freq[i][k]; 
+                                temp%=mod;
+                                ans+=temp;
+                                ans%=mod;
+                        }
+                }
+              //  cout<<endl;
+        }
+        if(ans < 0)
+                ans+=mod;
+        return ans;
+}
+
+// Sustract 1 from A
+
+string findDiff(string str1, string str2) 
+{ 
+        string str = ""; 
+        int n1 = str1.length(), n2 = str2.length(); 
+        reverse(str1.begin(), str1.end()); 
+        reverse(str2.begin(), str2.end()); 
+      
+        int carry = 0; 
+  
+        for (int i=0; i<n2; i++) 
+        {  
+                int sub = ((str1[i]-'0')-(str2[i]-'0')-carry); 
+                if (sub < 0) 
+                { 
+                        sub = sub + 10; 
+                        carry = 1; 
+                }        
+                else
+                        carry = 0; 
+  
+                str.push_back(sub + '0'); 
+        } 
+  
+        for (int i=n2; i<n1; i++) 
+        {    
+                int sub = ((str1[i]-'0') - carry); 
+                if (sub < 0) 
+                { 
+                        sub = sub + 10; 
+                        carry = 1; 
+                } 
+                else
+                        carry = 0;       
+                str.push_back(sub + '0'); 
+        } 
+  
+        reverse(str.begin(), str.end()); 
+  
+        return str; 
+} 
+
+
+int32_t main()
+{
+        string A, B;
+        cin>>A>>B;
+
+        string s = "1";
+        find(B, 1);
+        string x = findDiff(A,s);
+        while(x.length()!=B.length())
+        {
+                x='0'+x;
+        }
+        find(x, -1);
+        cout<<findAns();
+        return 0;
+}
