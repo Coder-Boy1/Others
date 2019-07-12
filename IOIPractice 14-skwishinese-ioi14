@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define N 402
+
+int mod =  1000000007;
+
+int dp[N][N][N];
+
+int ans = 405;
+int x1[N][N];
+int x2[N][N];
+
+
+int main()
+{
+        int n;
+        string s;
+        cin>>n;
+        cin>>s;
+        s = '-' + s + '-';
+        
+        for(int i=0;i<=n;i++)
+        {
+                for(int j=0;j<=n;j++)
+                {
+                        for(int k=0;k<=n;k++)
+                        {
+                                dp[i][j][k] = N;
+                        }
+                }
+        }
+        
+        for(int k=1;k<=n;k++)
+        {
+                for(int i=0;i<=n;i++)
+                {
+                        if(s[i]==s[k])
+                                x1[i][k] = 1;
+                        int j1 = n - i + 1;
+                        if(s[j1]==s[k])
+                                x2[i][k] = 1;
+                }
+        }
+        
+        for(int i=0;i<=n;i++)
+                dp[0][0][i] = 0;
+        
+        int temp;
+        int j1;
+        
+        for(int k=1;k<=n;k++)
+        {
+                for(int i=0;i<=n;i++)
+                {
+                        for(int j=0;j<=n;j++)
+                        {
+        
+                                temp = N;
+                                
+                                if(x1[i][k] && x2[j][k])
+                                {
+                                        temp = dp[i-1][j-1][k-1]+1;        
+                                }
+                                else if(x1[i][k])
+                                {
+                                        temp =  dp[i-1][j][k-1]+1;        
+                                }
+                                else if(x2[j][k])
+                                {
+                                        temp =  dp[i][j-1][k-1]+1;        
+                                }
+                                
+                                dp[i][j][k] = min(temp, dp[i][j][k-1]);
+                        }
+                }
+        }
+        
+        for(int i=0;i<=n;i++)
+        {
+                for(int j=0;j<=n;j++)
+                {
+                        if(i+j >= n)
+                        {
+                                ans = min(ans, dp[i][j][n]);
+                        }
+                }
+        }
+        
+        
+        
+        cout<<ans<<endl;
+        
+        
+        
+        
+        return 0;
+}
