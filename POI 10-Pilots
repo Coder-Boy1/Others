@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+
+
+int32_t main()
+{
+        ios_base::sync_with_stdio(false);    cin.tie(NULL);
+
+        int t, n;
+        cin>>t>>n;
+
+        vector < int > a(n);
+        for(int i=0; i<n; i++)
+        {
+                cin>>a[i];
+        }
+
+        int ans = 1;
+        deque < int > maxi, mini;
+        maxi.push_back(0);
+        mini.push_back(0);
+        
+        int l=0, r=0;
+
+
+        int i=1;
+                
+        while(r!=n)
+        {
+                int x = a[maxi.front()];
+                int y = a[mini.front()];
+                int diff = x - y;
+                if(diff <= t)
+                {
+                        r++;
+                        if(r!=n)
+                        {
+                                while(maxi.size())
+                                {
+                                        if(a[maxi.back()]<= a[r])
+                                                maxi.pop_back();
+                                        else 
+                                                break;
+                                }
+
+                                while(mini.size())
+                                {
+                                        if(a[mini.back()]>= a[r])
+                                                mini.pop_back();
+                                        else 
+                                                break;
+                                }
+
+                                maxi.push_back(r);
+                                mini.push_back(r);
+                        }
+                        ans = max(ans, r-l);
+                }
+                else
+                {
+                        while(maxi.size())
+                        {
+                                if(maxi.front()<=l)
+                                        maxi.pop_front();
+                                else 
+                                        break;
+                        }
+
+                        while(mini.size())
+                        {
+                                if(mini.front()<=l)
+                                        mini.pop_front();
+                                else 
+                                        break;
+                        }
+                        l++; 
+                }
+        }
+
+        cout<<ans<<endl;
+
+        return 0;
+}
