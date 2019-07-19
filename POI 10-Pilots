@@ -1,3 +1,9 @@
+// To solve this problem we can use two pointer approach. First assume l=0, r=0. 
+// We will increase r till the condition of difference between the maximum and minimum remains <= t holds true.  
+// When this condition does not satisfy we will increase the value of L. 
+// Now for finding maximum and minimum of our range we can use sliding window approach. 
+// Of course we can maintain a multiset and do it easily but that will give MLE in two tcs so use sliding window approach.
+
 #include <bits/stdc++.h>
 
 using namespace std;
