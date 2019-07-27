@@ -1,0 +1,154 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+#define  mod 1000000007
+#define  N   10005
+#define  inf 1e18
+
+vector < string > a;
+int vis[N];
+int ans = 0;
+int n;
+
+void foo()
+{
+        for(int i=0;i<N;i++)
+        {
+                vis[i] = 0;
+        }
+}
+
+char find(int x)
+{
+        int p[4]={0};
+        for(int i=0; i<n; i++)
+        {
+                if(vis[i])
+                {
+                        continue;
+                }
+                if(a[i][x]=='R')
+                        p[0]++;
+                else if(a[i][x]=='P')
+                        p[1]++;
+                else 
+                        p[2]++;
+        }
+
+        int cnt = 0;
+
+        if( p[0] && p[1] && p[2])
+        {
+                ans = 100;
+                return 'S';
+        }
+
+        char req='P';
+        if( p[0] && p[1])
+        {
+                req = 'P';
+        }
+        else if(p[0] && p[2])
+        {
+                req = 'R';
+        }
+        else if(p[1] && p[2])
+        {
+                req = 'S';
+        }
+        else if(p[0])
+        {
+                req = 'P';
+        }
+        else if(p[1])
+        {
+                req = 'S';
+        }
+        else if(p[2])
+        {
+                req = 'R';
+        }
+
+        for(int i=0;i<n;i++)
+        {
+                
+                if(req=='P' && a[i][x]=='R')
+                        vis[i]=1;
+                if(req=='R' && a[i][x]=='S')
+                        vis[i]=1;
+                if(req=='S' && a[i][x]=='P')
+                        vis[i]=1;
+                cnt+=vis[i];
+        }
+
+        if(cnt==n)
+                ans = 1;
+
+        return req;
+}
+
+int32_t main()
+{
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+
+        int t;
+        cin>>t;
+
+        for(int tt=1; tt<=t; tt++)
+        {
+                foo();
+                ans = 0;
+                cin>>n;
+                a.clear();
+
+                int len = 0;
+                for(int i=0;i<n;i++)
+                {
+                        string s;
+                        cin>>s;
+                        a.push_back(s);
+                        int x=  a[i].length();
+                        len = max(len, x);
+                }
+                len++;
+
+                for(int i=0;i<n;i++)
+                {
+                        int l = a[i].length();
+                        for(int j=a[i].length(); j<len; j++)
+                        {
+                                char s = a[i][j%l];
+                                a[i]+=s;
+                        }
+                }
+                
+                string foo;
+                for(int i=0; i<len; i++)
+                {
+                        char c = find(i);
+                        if(ans==100)
+                                break;
+                        foo+=c;
+                        if(ans==1)
+                                break;
+                }
+                
+                cout<<"Case"<<" "<<"#"<<tt<<":"<<" ";
+                if(ans==100)
+                {
+                        cout<<"IMPOSSIBLE"<<endl;
+                }
+                else
+                {
+                        cout<<foo<<endl;
+                }
+        }
+
+
+        return 0;
+}
+
