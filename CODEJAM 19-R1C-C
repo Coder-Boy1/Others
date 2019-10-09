@@ -1,0 +1,158 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int long long
+
+char a[25][25];
+int gru[16][16][16][16];
+
+int32_t main()
+{
+    int t;
+    cin>>t;
+
+    for(int tt=1;tt<=t;tt++)
+    {
+        cout<<"Case"<<" "<<"#"<<tt<<":"<<" ";
+        int n, m;
+        cin>>n>>m;
+
+        for(int i=1;i<=n;i++)
+            for(int j=1;j<=m;j++)
+                cin>>a[i][j];
+
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j<=m;j++)
+            {
+                if(a[i][j] == '#')
+                    gru[i][j][i][j] = 0;
+                else 
+                    gru[i][j][i][j] = 1;        
+            }
+        }
+
+        int golu = 0;
+        for(int h=1;h<=n;h++)
+        {
+            for(int w=1;w<=m;w++)
+            {
+                if(h==1 && w==1)
+                    continue;
+                for(int i=1;i<=n-h+1;i++)
+                {
+                    for(int j=1;j<=m-w+1;j++)
+                    {
+                        set < int > s;
+                        for(int k=j;k<=j+w-1;k++)
+                        {
+                            int valid = 1;
+                            for(int xx=1;xx<=h;xx++)
+                            {
+                                if(a[i+xx-1][k]=='#')
+                                    valid = 0;
+                            }
+                            if(valid)
+                            {
+                                if(k==j)
+                                {
+                                    if(k==j+w-1)
+                                    {
+                                        if(i==1 && j==1 && h==n && w==m)
+                                            golu+=n;
+                                        s.insert(0);
+                                    }
+                                    else
+                                    {
+                        if(i==1 && j==1 && h==n && w==m && gru[i][j+1][i+h-1][j+w-1]==0)
+                                            golu+=n;
+                                        s.insert(gru[i][j+1][i+h-1][j+w-1]);
+                                    }
+                                }
+                                else if(k==j+w-1)
+                                {
+                    if(i==1 && j==1 && h==n && w==m && gru[i][j][i+h-1][j+w-2]==0)
+                                    golu+=n;                    
+                                    s.insert(gru[i][j][i+h-1][j+w-2]);
+                                }
+                                else
+                                {
+                            int x = gru[i][j][i+h-1][k-1] ^ gru[i][k+1][i+h-1][j+w-1];
+                                    if(x==0 && i==1 && j==1 && h==n && w==m)
+                                        golu+=n;
+                                    s.insert(x);
+                                }
+                            }
+                        }
+                    
+                        for(int k=i;k<=i+h-1;k++)
+                        {
+                            int valid = 1;
+
+                            for(int xx=1;xx<=w;xx++)
+                            {
+                                if(a[k][j+xx-1]=='#')
+                                    valid = 0;
+                            }
+                            if(valid)
+                            {
+                                if(k==i)
+                                {
+                                    if(k==i+h-1)
+                                    {
+                                    if(i==1 && j==1 && h==n && w==m)
+                                        golu+=m;
+                                        s.insert(0);
+                                    }
+                                    else
+                                    {
+                    if(gru[i+1][j][i+h-1][j+w-1]==0 && i==1 && j==1 && h==n && w==m)
+                                        golu+=m;                  
+                                        s.insert(gru[i+1][j][i+h-1][j+w-1]);
+                                    }
+                                }
+                                else if(k==i+h-1)
+                                {
+                    if(gru[i][j][i+h-2][j+w-1]==0 && i==1 && j==1 && h==n && w==m)
+                                        golu+=m;                  
+                                    s.insert(gru[i][j][i+h-2][j+w-1]);
+                                }
+                                else
+                                {
+                            int x = gru[i][j][k-1][j+w-1] ^ gru[k+1][j][i+h-1][j+w-1];
+                                    if(x==0 && i==1 && j==1 && h==n && w==m)
+                                        golu+=m;
+                                    s.insert(x);
+                                }
+                            }
+                        }
+                        
+                        int ans = 0;
+                        for(;;ans++)
+                        {
+                            if(s.find(ans)==s.end())
+                            {
+                                gru[i][j][i+h-1][j+w-1] = ans;
+                                break;
+                            }
+                        }
+                    }   
+                }
+            }
+        }
+
+        if(n==1 && m==1)
+        {
+            if(a[1][1]=='#')
+                cout<<0<<endl;
+            else
+                cout<<2<<endl;
+        }
+        else if(gru[1][1][n][m]!=0)
+            cout<<golu<<endl;
+        else
+            cout<<0<<endl;
+    }
+    return 0;
+}
